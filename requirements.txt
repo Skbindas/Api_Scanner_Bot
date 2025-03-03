@@ -1,0 +1,11 @@
+playwright>=1.35.0
+pandas>=2.0.0
+requests>=2.31.0
+tldextract>=3.4.0
+shodan>=1.29.1
+scapy>=2.5.0
+beautifulsoup4>=4.12.2
+lxml>=4.9.3
+scikit-learn>=1.3.0
+tkinter
+asyncio>=3.4.3

@@ -1,0 +1,33 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Virtual environment
+venv/
+env/
+.env/
+
+# IDE settings
+.vscode/
+.idea/
+
+# Scan results and sensitive data
+scan_results/
+*.log
+*.csv
+*.json
+
+# Local development settings
+*.env
+.env.local
+.env.*.local
+
+# System Files
+.DS_Store
+Thumbs.db
