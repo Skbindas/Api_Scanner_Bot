@@ -151,7 +151,7 @@ def retry_with_backoff(
     max_attempts: int = 3,
     min_wait: float = 1.0,
     max_wait: float = 60.0,
-    retry_on: type = Exception,
+    retry_on: type | tuple[type, ...] = Exception,
 ) -> Callable[[F], F]:
     """Create a retry decorator with exponential backoff.
 
@@ -162,7 +162,7 @@ def retry_with_backoff(
         max_attempts: Maximum number of attempts before giving up.
         min_wait: Minimum wait time in seconds between retries.
         max_wait: Maximum wait time in seconds between retries.
-        retry_on: Exception type(s) to retry on.
+        retry_on: Exception type or tuple of types to retry on.
 
     Returns:
         Decorator function that adds retry logic to the wrapped function.

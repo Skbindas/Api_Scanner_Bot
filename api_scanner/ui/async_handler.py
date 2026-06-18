@@ -31,28 +31,38 @@ class AsyncHandler:
         """Initialize the AsyncHandler.
 
         Creates a daemon thread running its own asyncio event loop.
+        Uses a threading.Event to wait efficiently for the loop to
+        become available, with a timeout to avoid hanging indefinitely.
 
         Args:
             root: The Tkinter root widget for scheduling callbacks on
                   the main thread.
+
+        Raises:
+            RuntimeError: If the event loop fails to start within 5 seconds.
         """
         self.root = root
         self._loop: Optional[asyncio.AbstractEventLoop] = None
+        self._loop_ready = threading.Event()
         self._thread = threading.Thread(target=self._run_loop, daemon=True)
         self._thread.start()
 
-        # Wait briefly for the loop to be created
-        while self._loop is None:
-            pass
+        # Wait for the loop to be created with a timeout
+        if not self._loop_ready.wait(timeout=5.0):
+            raise RuntimeError(
+                "AsyncHandler: background event loop failed to start within 5 seconds"
+            )
 
     def _run_loop(self) -> None:
         """Run the asyncio event loop in the background thread.
 
         This method runs indefinitely in the daemon thread. It creates
-        a new event loop and runs it until the thread is terminated.
+        a new event loop, signals readiness, and runs until the thread
+        is terminated.
         """
         self._loop = asyncio.new_event_loop()
         asyncio.set_event_loop(self._loop)
+        self._loop_ready.set()
         self._loop.run_forever()
 
     def submit(

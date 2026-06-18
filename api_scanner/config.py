@@ -99,3 +99,25 @@ class AppConfig:
 
         if not self.output_dir:
             raise ValueError("output_dir must not be empty")
+
+    def set_shodan_api_key(self, key: str) -> None:
+        """Set the Shodan API key with validation.
+
+        Validates that the key is not empty or a known placeholder
+        before updating the value.
+
+        Args:
+            key: The new API key value.
+
+        Raises:
+            ValueError: If the key is empty or a known placeholder.
+        """
+        stripped = key.strip() if key else ""
+        if not stripped:
+            raise ValueError("Shodan API key must not be empty")
+        placeholders = {"your_api_key_here", "changeme", "xxx", "test"}
+        if stripped.lower() in placeholders:
+            raise ValueError(
+                "Shodan API key appears to be a placeholder value"
+            )
+        self.shodan_api_key = stripped

@@ -6,12 +6,14 @@ handlers, using rotating file handlers to manage log file size.
 """
 
 import logging
-import os
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
+from typing import Optional
 
 
-def setup_logger(name: str, level: str = "INFO") -> logging.Logger:
+def setup_logger(
+    name: str, level: str = "INFO", log_dir: Optional[str] = None
+) -> logging.Logger:
     """Create and configure a logger with file and console handlers.
 
     Creates a logger that writes to both a rotating log file and the console.
@@ -20,6 +22,8 @@ def setup_logger(name: str, level: str = "INFO") -> logging.Logger:
     Args:
         name: Name for the logger (typically __name__ of the calling module).
         level: Logging level string (DEBUG, INFO, WARNING, ERROR, CRITICAL).
+        log_dir: Optional path to the log directory. Defaults to "logs" if
+                 not specified.
 
     Returns:
         Configured logging.Logger instance.
@@ -37,12 +41,12 @@ def setup_logger(name: str, level: str = "INFO") -> logging.Logger:
     )
 
     # Create logs directory if it doesn't exist
-    log_dir = Path("logs")
-    log_dir.mkdir(parents=True, exist_ok=True)
+    log_path = Path(log_dir) if log_dir else Path("logs")
+    log_path.mkdir(parents=True, exist_ok=True)
 
     # Rotating file handler: 5MB max, 3 backup files
     file_handler = RotatingFileHandler(
-        filename=log_dir / "scanner.log",
+        filename=log_path / "scanner.log",
         maxBytes=5 * 1024 * 1024,  # 5MB
         backupCount=3,
         encoding="utf-8",

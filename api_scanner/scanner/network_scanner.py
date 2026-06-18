@@ -63,6 +63,9 @@ class NetworkScanner:
         "application/x-protobuf",
     ]
 
+    # Maximum size of response body to capture (in bytes)
+    MAX_BODY_PREVIEW_SIZE: int = 500
+
     def __init__(self, config: AppConfig) -> None:
         """Initialize the NetworkScanner with configuration.
 
@@ -75,6 +78,7 @@ class NetworkScanner:
         self._meta_analyzer = MetaAnalyzer()
         self._captured_requests: list[RequestData] = []
         self._captured_responses: list[ResponseData] = []
+        self._raw_responses: list[Response] = []
 
     async def scan(self, url: str) -> ScanResult:
         """Perform a full scan of the target URL.
@@ -100,6 +104,7 @@ class NetworkScanner:
         # Reset captured data for this scan
         self._captured_requests = []
         self._captured_responses = []
+        self._raw_responses = []
         errors: list[str] = []
         storage_data: Optional[StorageData] = None
         meta_data: Optional[MetaData] = None
@@ -156,6 +161,9 @@ class NetworkScanner:
                 len(self._captured_requests),
                 len(self._captured_responses),
             )
+
+            # Read response bodies now that we are in an async context
+            await self._read_response_bodies()
 
             # Extract storage data
             try:
@@ -248,8 +256,9 @@ class NetworkScanner:
     def _on_response(self, response: Response) -> None:
         """Handle intercepted network responses.
 
-        Callback for Playwright's response event. Captures response data
-        into the internal list.
+        Callback for Playwright's response event. Captures response metadata
+        into the internal list and stores the raw Playwright Response object
+        for later body reading in an async context.
 
         Args:
             response: The Playwright Response object.
@@ -263,13 +272,41 @@ class NetworkScanner:
                 url=response.url,
                 status_code=response.status,
                 headers=headers,
-                body_preview="",  # Body read asynchronously below
+                body_preview="",  # Populated later in _read_response_bodies
                 content_type=content_type,
                 size=0,
             )
             self._captured_responses.append(response_data)
+            # Keep the raw Playwright Response for body reading after navigation
+            self._raw_responses.append(response)
         except Exception as e:
             self._logger.debug("Error capturing response: %s", str(e))
+
+    async def _read_response_bodies(self) -> None:
+        """Read response bodies from collected Playwright Response objects.
+
+        Iterates through raw Response objects collected during page events
+        and reads their bodies within this async context. Updates the
+        corresponding ResponseData entries with body_preview and size.
+        """
+        for i, raw_response in enumerate(self._raw_responses):
+            if i >= len(self._captured_responses):
+                break
+            try:
+                body = await raw_response.body()
+                size = len(body) if body else 0
+                self._captured_responses[i].size = size
+                if body:
+                    decoded = self._decode_body(body)
+                    self._captured_responses[i].body_preview = decoded[
+                        : self.MAX_BODY_PREVIEW_SIZE
+                    ]
+            except Exception as e:
+                self._logger.debug(
+                    "Could not read body for %s: %s",
+                    self._captured_responses[i].url,
+                    str(e),
+                )
 
     def _identify_api_endpoints(self) -> list[RequestData]:
         """Identify API endpoints from captured requests and responses.

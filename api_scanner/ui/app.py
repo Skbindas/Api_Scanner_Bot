@@ -156,8 +156,11 @@ class ScannerApp(tk.Tk):
         )
 
         if new_key is not None:
-            self.config.shodan_api_key = new_key.strip()
-            self._status_bar.set_status("API key updated.")
+            try:
+                self.config.set_shodan_api_key(new_key)
+                self._status_bar.set_status("API key updated.")
+            except ValueError as e:
+                self._status_bar.set_status(f"Invalid API key: {e}")
 
     def _on_close(self) -> None:
         """Handle application close event.

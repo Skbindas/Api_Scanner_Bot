@@ -83,7 +83,7 @@ class ShodanScanner:
                 f"Failed to resolve domain '{domain}': {e}"
             )
 
-    @retry_with_backoff(max_attempts=3, min_wait=1.0, max_wait=30.0, retry_on=Exception)
+    @retry_with_backoff(max_attempts=3, min_wait=1.0, max_wait=30.0, retry_on=(NetworkError,))
     def _query_host(self, ip: str) -> dict:
         """Query Shodan for host information with retry logic.
 
