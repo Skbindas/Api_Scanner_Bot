@@ -1,84 +1,238 @@
-# API Scanner Bot 🔍
+# API Scanner Pro v2.0
 
-## Overview / परियोजना विवरण
+![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-blue.svg)
+![License MIT](https://img.shields.io/badge/License-MIT-green.svg)
+![Version 2.0](https://img.shields.io/badge/Version-2.0.0-orange.svg)
 
-API Scanner Bot is a powerful tool designed to analyze websites, detect API endpoints, and assess security vulnerabilities. It provides comprehensive information about network requests, storage data, and potential security risks.
+## Overview
 
-API स्कैनर बॉट एक शक्तिशाली टूल है जो वेबसाइटों का विश्लेषण करने, API एंडपॉइंट्स का पता लगाने और सुरक्षा कमजोरियों का आकलन करने के लिए डिज़ाइन किया गया है। यह नेटवर्क अनुरोधों, स्टोरेज डेटा और संभावित सुरक्षा जोखिमों के बारे में व्यापक जानकारी प्रदान करता है।
+**API Scanner Pro** is a professional desktop application for scanning websites, detecting API endpoints, analyzing security threats, and exporting comprehensive reports. Built with Python, it combines network interception via Playwright with heuristic-based threat analysis and a modern Tkinter GUI.
 
-## Features / विशेषताएं
+---
 
-- API endpoint detection / API एंडपॉइंट की पहचान
-- Network request monitoring / नेटवर्क अनुरोध निगरानी
-- Security vulnerability scanning / सुरक्षा कमजोरी स्कैनिंग
-- Local & session storage analysis / लोकल और सेशन स्टोरेज विश्लेषण
-- Cookie analysis / कुकी विश्लेषण
-- AI-powered phishing detection / AI-संचालित फ़िशिंग पहचान
+### Overview (Hindi)
 
-## Prerequisites / आवश्यकताएं
+**API Scanner Pro** एक professional desktop application है जो websites को scan करता है, API endpoints detect करता है, security threats analyze करता है, और comprehensive reports export करता है। Python में built, यह Playwright के माध्यम से network interception को heuristic-based threat analysis और modern Tkinter GUI के साथ combine करता है।
 
-1. Python 3.7 or higher / पायथन 3.7 या उच्चतर
-2. Shodan API Key / शोडन API की
-3. pip (Python package installer) / पिप (पायथन पैकेज इंस्टॉलर)
+---
 
-## Installation / इंस्टालेशन
+## Features
 
-1. Clone the repository / रिपॉजिटरी को क्लोन करें:
-```bash
-git clone https://github.com/skbindas/api_scanner_bot.git
-cd api_scanner_bot
+### Scanning
+- Full browser-based network interception using Playwright
+- Automatic API endpoint detection from captured traffic
+- Cookie, localStorage, and sessionStorage extraction
+- HTML metadata and Open Graph tag parsing
+- Configurable scan timeouts and retries
+
+### Security Analysis
+- Heuristic-based URL threat detection (phishing, typosquatting, suspicious TLDs)
+- HTML content analysis (hidden iframes, obfuscated JS, suspicious forms)
+- Shodan integration for host intelligence (open ports, CVEs, services)
+- Risk scoring with severity levels: safe, low, medium, high, critical
+
+### Export
+- JSON export with full metadata and scanner version info
+- CSV export with separate files for requests, endpoints, and responses
+- HTML report with professional styling, card-based layout, and responsive design
+- Batch export via ExportManager for all formats at once
+
+### User Interface
+- Modern Tkinter-based GUI with tabbed interface
+- Async scanning with real-time progress feedback
+- Dedicated tabs: Scanner, Security, Results, Reports
+- Custom widgets: StatusBar, URLInput, LogConsole, RiskBadge
+
+---
+
+## Architecture
+
+```
+Api_Scanner_Bot/
+├── api_scanner/                  # Main package
+│   ├── __init__.py               # Package init, version = "2.0.0"
+│   ├── config.py                 # AppConfig dataclass (env-based settings)
+│   ├── exceptions.py             # Custom exception hierarchy
+│   ├── logger.py                 # Logging setup (file + console)
+│   ├── utils.py                  # URL validation, rate limiter, retry, serialization
+│   ├── main.py                   # Application entry point
+│   ├── scanner/                  # Core scanning engine
+│   │   ├── models.py             # RequestData, ResponseData, ScanResult, etc.
+│   │   ├── network_scanner.py    # Playwright-based network interception
+│   │   ├── storage_analyzer.py   # Cookie/storage extraction
+│   │   └── meta_analyzer.py      # HTML metadata parsing
+│   ├── security/                 # Security analysis module
+│   │   ├── models.py             # ThreatReport, SecurityFinding, etc.
+│   │   ├── threat_analyzer.py    # Heuristic URL/HTML threat detection
+│   │   └── shodan_scanner.py     # Shodan API integration
+│   ├── exporters/                # Report export system
+│   │   ├── base.py               # BaseExporter abstract class
+│   │   ├── json_exporter.py      # JSON report generation
+│   │   ├── csv_exporter.py       # CSV report generation (pandas)
+│   │   ├── html_exporter.py      # Standalone HTML report generation
+│   │   └── export_manager.py     # Multi-format export coordinator
+│   └── ui/                       # Tkinter GUI
+│       ├── app.py                # Main ScannerApp window
+│       ├── async_handler.py      # Daemon thread + event loop for async ops
+│       ├── widgets.py            # Custom reusable widgets
+│       ├── scanner_tab.py        # URL scan tab
+│       ├── security_tab.py       # Security analysis tab
+│       ├── results_tab.py        # Results display tab
+│       └── reports_tab.py        # Export/reports tab
+├── tests/                        # Test suite
+│   ├── conftest.py               # Shared fixtures
+│   ├── test_config.py            # Config loading tests
+│   ├── test_utils.py             # Utility function tests
+│   ├── test_models.py            # Data model tests
+│   ├── test_threat_analyzer.py   # Threat detection tests
+│   └── test_exporters.py         # Export system tests
+├── logs/                         # Application logs
+├── .env                          # Environment configuration (gitignored)
+├── .env.example                  # Example configuration template
+├── requirements.txt              # Python dependencies
+├── pyproject.toml                # Project metadata
+└── README.md                     # This file
 ```
 
-2. Install required packages / आवश्यक पैकेज इंस्टॉल करें:
+---
+
+## Installation
+
+### Prerequisites
+
+- Python 3.11 or higher
+- pip package manager
+
+### Step-by-Step Setup
+
 ```bash
+# 1. Clone the repository
+git clone https://github.com/your-username/Api_Scanner_Bot.git
+cd Api_Scanner_Bot
+
+# 2. Create and activate a virtual environment
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# 3. Install dependencies
 pip install -r requirements.txt
+
+# 4. Install Playwright browser (required for scanning)
+playwright install chromium
+
+# 5. Configure environment
+cp .env.example .env
+# Edit .env with your settings (e.g., add your Shodan API key)
+
+# 6. Launch the application
+python3 -m api_scanner.main
 ```
 
-3. Configure Shodan API Key / शोडन API की कॉन्फ़िगर करें:
-   - Copy `.env.example` to `.env` / `.env.example` को `.env` में कॉपी करें
-   - Replace `your_shodan_api_key_here` with your Shodan API key / `your_shodan_api_key_here` को अपनी Shodan API की से बदलें
+---
 
-## Usage / उपयोग
+## Configuration
 
-1. Start the application / एप्लिकेशन शुरू करें:
+All configuration is managed through environment variables. Create a `.env` file (see `.env.example`):
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SHODAN_API_KEY` | `""` | Shodan API key for host security scanning |
+| `SCAN_TIMEOUT` | `30` | Maximum seconds to wait for a page scan |
+| `MAX_RETRIES` | `3` | Number of retries for failed network requests |
+| `RATE_LIMIT_DELAY` | `1.0` | Minimum seconds between rate-limited requests |
+| `OUTPUT_DIR` | `scan_results` | Directory for storing exported reports |
+| `HEADLESS` | `true` | Run browser in headless mode (no visible window) |
+| `LOG_LEVEL` | `INFO` | Logging verbosity: DEBUG, INFO, WARNING, ERROR, CRITICAL |
+
+---
+
+## Usage
+
+### Launch the GUI
+
 ```bash
-python api_scanner_bot.py
+python3 -m api_scanner.main
 ```
 
-2. Enter the website URL in the input field / इनपुट फ़ील्ड में वेबसाइट URL दर्ज करें
+### Scan Workflow
 
-3. Click "Scan Website" to analyze API endpoints and network data / API एंडपॉइंट्स और नेटवर्क डेटा का विश्लेषण करने के लिए "Scan Website" पर क्लिक करें
+1. Enter a target URL in the Scanner tab
+2. Click "Scan" to start the browser-based analysis
+3. View captured API endpoints and network requests in the Results tab
+4. Check Security tab for threat analysis results
+5. Export reports in JSON, CSV, or HTML format via the Reports tab
 
-4. Click "Check Security" to perform vulnerability scanning / कमजोरी स्कैनिंग करने के लिए "Check Security" पर क्लिक करें
+### Export Formats
 
-## Results / परिणाम
+- **JSON**: Complete structured data with metadata, ideal for programmatic access
+- **CSV**: Tabular data split into requests.csv, api_endpoints.csv, and responses.csv
+- **HTML**: Self-contained professional report with embedded CSS, suitable for sharing
 
-The scan results are saved in the following directories / स्कैन परिणाम निम्नलिखित डायरेक्टरी में सहेजे जाते हैं:
+---
 
-- `scan_results/network_logs/`: Network request logs / नेटवर्क अनुरोध लॉग
-- `scan_results/api_info/`: Detected API endpoints / पता लगाए गए API एंडपॉइंट्स
-- `scan_results/storage_data/`: Local and session storage data / लोकल और सेशन स्टोरेज डेटा
-- `scan_results/security_findings/`: Security vulnerability reports / सुरक्षा कमजोरी रिपोर्ट
+## Development
 
-## Important Notes / महत्वपूर्ण नोट्स
+### Setup
 
-- Ensure you have a valid Shodan API key / सुनिश्चित करें कि आपके पास वैध शोडन API की है
-- Use the tool responsibly and only on websites you have permission to scan / टूल का जिम्मेदारी से उपयोग करें और केवल उन वेबसाइटों पर स्कैन करें जिनकी आपको अनुमति है
-- Some websites may block automated scanning / कुछ वेबसाइटें स्वचालित स्कैनिंग को ब्लॉक कर सकती हैं
+```bash
+# Clone and install in development mode
+git clone https://github.com/your-username/Api_Scanner_Bot.git
+cd Api_Scanner_Bot
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+playwright install chromium
+```
 
-## Troubleshooting / समस्या समाधान
+### Running Tests
 
-1. If the scan fails / यदि स्कैन विफल हो जाता है:
-   - Check your internet connection / अपना इंटरनेट कनेक्शन जांचें
-   - Verify the website URL is correct / सत्यापित करें कि वेबसाइट URL सही है
-   - Ensure Shodan API key is valid / सुनिश्चित करें कि शोडन API की वैध है
+```bash
+# Run full test suite
+python3 -m pytest tests/ -v
 
-2. If no results appear / यदि कोई परिणाम नहीं दिखता:
-   - Try scanning a different website / एक अलग वेबसाइट स्कैन करने का प्रयास करें
-   - Check if the website is accessible / जांचें कि वेबसाइट एक्सेसिबल है
-   - Verify all required packages are installed / सत्यापित करें कि सभी आवश्यक पैकेज इंस्टॉल हैं
+# Run specific test module
+python3 -m pytest tests/test_threat_analyzer.py -v
 
-## Support / सहायता
+# Run with coverage (if pytest-cov installed)
+python3 -m pytest tests/ --cov=api_scanner -v
+```
 
-For issues and queries, please create an issue in the repository.
-समस्याओं और प्रश्नों के लिए, कृपया रिपॉजिटरी में एक इश्यू बनाएं।
+### Code Quality
+
+```bash
+# Check all files compile without errors
+python3 -m py_compile api_scanner/__init__.py
+python3 -m py_compile api_scanner/main.py
+
+# Verify imports work
+python3 -c "import api_scanner; print(api_scanner.__version__)"
+```
+
+---
+
+## Testing (Hindi)
+
+```bash
+# पूरा test suite चलाएं
+python3 -m pytest tests/ -v
+
+# Specific module test करें
+python3 -m pytest tests/test_threat_analyzer.py -v
+```
+
+---
+
+## License
+
+This project is licensed under the MIT License.
+
+---
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/your-feature`)
+3. Write tests for your changes
+4. Ensure all tests pass (`python3 -m pytest tests/ -v`)
+5. Commit your changes with descriptive messages
+6. Push and open a Pull Request
