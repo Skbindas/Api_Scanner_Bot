@@ -2,7 +2,7 @@
 
 All notable changes to API Scanner Pro are documented here.
 
-## [2.0.0] - 2026-09-18
+## [2.0.0] - Release candidate baseline (2026-09-18)
 
 ### Added
 - Browser-based API and network discovery with Playwright.
@@ -19,6 +19,7 @@ All notable changes to API Scanner Pro are documented here.
 - Added reproducible usage documentation.
 - Added security/privacy guidance.
 - Added a newcomer-friendly Good First Issue.
+- Added release automation and citation metadata.
 
 ### Notes
-This release documents the current open-source maintenance baseline. Security findings are heuristic indicators for investigation and are not definitive vulnerability verdicts.
+This is the 2.0.0 release-candidate baseline. The published GitHub release remains pending creation of the `v2.0.0` tag. Security findings are heuristic indicators for investigation and are not definitive vulnerability verdicts.
