@@ -6,7 +6,7 @@ with integrated security assessment capabilities.
 """
 
 __version__ = "2.0.0"
-__author__ = "API Scanner Team"
+__author__ = "Suhaib Choudhary"
 
 from api_scanner.config import AppConfig
 from api_scanner.exceptions import (

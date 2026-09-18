@@ -5,7 +5,7 @@ description = "Professional API Security Scanner with integrated analysis and re
 requires-python = ">=3.11"
 license = {text = "MIT"}
 authors = [
-    {name = "API Scanner Team"}
+    {name = "Suhaib Choudhary"}
 ]
 dependencies = [
     "python-dotenv>=1.0.0",
