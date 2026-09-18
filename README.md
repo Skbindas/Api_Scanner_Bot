@@ -4,235 +4,154 @@
 ![License MIT](https://img.shields.io/badge/License-MIT-green.svg)
 ![Version 2.0](https://img.shields.io/badge/Version-2.0.0-orange.svg)
 
-## Overview
+**API Scanner Pro** is an open-source Python security and developer utility for browser-based API discovery, network inspection, heuristic threat analysis, and report generation.
 
-**API Scanner Pro** is a professional desktop application for scanning websites, detecting API endpoints, analyzing security threats, and exporting comprehensive reports. Built with Python, it combines network interception via Playwright with heuristic-based threat analysis and a modern Tkinter GUI.
-
----
-
-### Overview (Hindi)
-
-**API Scanner Pro** एक professional desktop application है जो websites को scan करता है, API endpoints detect करता है, security threats analyze करता है, और comprehensive reports export करता है। Python में built, यह Playwright के माध्यम से network interception को heuristic-based threat analysis और modern Tkinter GUI के साथ combine करता है।
-
----
+> **Status:** Active development. The scanner produces evidence and heuristic indicators for investigation; it does not provide definitive vulnerability or malware verdicts.
 
 ## Features
 
-### Scanning
-- Full browser-based network interception using Playwright
-- Automatic API endpoint detection from captured traffic
-- Cookie, localStorage, and sessionStorage extraction
-- HTML metadata and Open Graph tag parsing
-- Configurable scan timeouts and retries
-
-### Security Analysis
-- Heuristic-based URL threat detection (phishing, typosquatting, suspicious TLDs)
-- HTML content analysis (hidden iframes, obfuscated JS, suspicious forms)
-- Shodan integration for host intelligence (open ports, CVEs, services)
-- Risk scoring with severity levels: safe, low, medium, high, critical
-
-### Export
-- JSON export with full metadata and scanner version info
-- CSV export with separate files for requests, endpoints, and responses
-- HTML report with professional styling, card-based layout, and responsive design
-- Batch export via ExportManager for all formats at once
-
-### User Interface
-- Modern Tkinter-based GUI with tabbed interface
-- Async scanning with real-time progress feedback
-- Dedicated tabs: Scanner, Security, Results, Reports
-- Custom widgets: StatusBar, URLInput, LogConsole, RiskBadge
-
----
+- Browser network interception with Playwright.
+- Likely API endpoint detection from URL and response-content heuristics.
+- Cookie, localStorage, and sessionStorage inspection.
+- HTML metadata and security-header analysis.
+- Deterministic URL/HTML threat heuristics, including IP hosts, suspicious TLDs, typosquatting patterns, suspicious forms, hidden iframes, and obfuscated JavaScript.
+- Optional Shodan host intelligence.
+- JSON, CSV, and standalone HTML report export.
+- Tkinter desktop UI plus a scriptable CLI.
+- Automated tests and GitHub Actions CI.
 
 ## Architecture
 
-```
+```text
 Api_Scanner_Bot/
-├── api_scanner/                  # Main package
-│   ├── __init__.py               # Package init, version = "2.0.0"
-│   ├── config.py                 # AppConfig dataclass (env-based settings)
-│   ├── exceptions.py             # Custom exception hierarchy
-│   ├── logger.py                 # Logging setup (file + console)
-│   ├── utils.py                  # URL validation, rate limiter, retry, serialization
-│   ├── main.py                   # Application entry point
-│   ├── scanner/                  # Core scanning engine
-│   │   ├── models.py             # RequestData, ResponseData, ScanResult, etc.
-│   │   ├── network_scanner.py    # Playwright-based network interception
-│   │   ├── storage_analyzer.py   # Cookie/storage extraction
-│   │   └── meta_analyzer.py      # HTML metadata parsing
-│   ├── security/                 # Security analysis module
-│   │   ├── models.py             # ThreatReport, SecurityFinding, etc.
-│   │   ├── threat_analyzer.py    # Heuristic URL/HTML threat detection
-│   │   └── shodan_scanner.py     # Shodan API integration
-│   ├── exporters/                # Report export system
-│   │   ├── base.py               # BaseExporter abstract class
-│   │   ├── json_exporter.py      # JSON report generation
-│   │   ├── csv_exporter.py       # CSV report generation (pandas)
-│   │   ├── html_exporter.py      # Standalone HTML report generation
-│   │   └── export_manager.py     # Multi-format export coordinator
-│   └── ui/                       # Tkinter GUI
-│       ├── app.py                # Main ScannerApp window
-│       ├── async_handler.py      # Daemon thread + event loop for async ops
-│       ├── widgets.py            # Custom reusable widgets
-│       ├── scanner_tab.py        # URL scan tab
-│       ├── security_tab.py       # Security analysis tab
-│       ├── results_tab.py        # Results display tab
-│       └── reports_tab.py        # Export/reports tab
-├── tests/                        # Test suite
-│   ├── conftest.py               # Shared fixtures
-│   ├── test_config.py            # Config loading tests
-│   ├── test_utils.py             # Utility function tests
-│   ├── test_models.py            # Data model tests
-│   ├── test_threat_analyzer.py   # Threat detection tests
-│   └── test_exporters.py         # Export system tests
-├── logs/                         # Application logs
-├── .env                          # Environment configuration (gitignored)
-├── .env.example                  # Example configuration template
-├── requirements.txt              # Python dependencies
-├── pyproject.toml                # Project metadata
-└── README.md                     # This file
+├── api_scanner/
+│   ├── cli.py                   # Scriptable command-line interface
+│   ├── main.py                  # Tkinter application entry point
+│   ├── config.py                # Environment-based configuration
+│   ├── exceptions.py
+│   ├── logger.py
+│   ├── utils.py
+│   ├── scanner/                 # Network capture, storage, metadata, models
+│   ├── security/                # Threat analysis and optional Shodan integration
+│   ├── exporters/               # JSON, CSV, HTML reporting
+│   └── ui/                      # Tkinter interface
+├── tests/
+├── docs/
+├── .github/
+│   ├── ISSUE_TEMPLATE/
+│   ├── pull_request_template.md
+│   └── workflows/ci.yml
+├── CONTRIBUTING.md
+├── SECURITY.md
+├── LICENSE
+├── .env.example
+├── requirements.txt
+├── pyproject.toml
+└── README.md
 ```
-
----
 
 ## Installation
 
-### Prerequisites
-
-- Python 3.11 or higher
-- pip package manager
-
-### Step-by-Step Setup
+Requirements: Python 3.11+ and Chromium installed by Playwright for browser scans.
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/your-username/Api_Scanner_Bot.git
+git clone https://github.com/Skbindas/Api_Scanner_Bot.git
 cd Api_Scanner_Bot
-
-# 2. Create and activate a virtual environment
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# 3. Install dependencies
-pip install -r requirements.txt
-
-# 4. Install Playwright browser (required for scanning)
+python -m venv .venv
+# macOS/Linux
+source .venv/bin/activate
+# Windows: .venv\\Scripts\\activate
+pip install -e ".[dev]"
 playwright install chromium
-
-# 5. Configure environment
-cp .env.example .env
-# Edit .env with your settings (e.g., add your Shodan API key)
-
-# 6. Launch the application
-python3 -m api_scanner.main
 ```
 
----
+Optional configuration is documented in `.env.example`.
+
+## CLI
+
+The CLI supports reproducible local analysis and automation without launching the Tkinter UI.
+
+```bash
+api-scanner --help
+api-scanner analyze-url https://example.com
+api-scanner analyze-url https://example.com --json
+api-scanner scan https://example.com
+api-scanner scan https://example.com --export json csv html
+```
+
+For a visible browser, custom timeout, or output directory:
+
+```bash
+api-scanner scan https://example.com --output-dir ./artifacts --timeout 45 --headed
+```
+
+The CLI reuses the project's scanning and export components.
+
+## Reproducible usage evidence
+
+This project documents **reproducible local usage instead of making unverifiable claims about external users or production traffic**.
+
+See [docs/usage-example.md](docs/usage-example.md) for an end-to-end workflow. The test suite covers configuration, models, utilities, threat analysis, exporters, and CLI argument parsing.
+
+Run the local checks:
+
+```bash
+pytest -q
+python -m compileall -q api_scanner
+python -m api_scanner.cli --help
+```
+
+GitHub Actions runs the tests and CLI/package smoke checks on Python 3.11, 3.12, and 3.13.
+
+## GUI workflow
+
+1. Enter an authorized target URL.
+2. Start the browser-based scan.
+3. Review captured requests and likely API endpoints.
+4. Review security indicators and metadata.
+5. Export JSON, CSV, or HTML reports.
+
+## Security and privacy
+
+The scanner can capture request/response metadata and browser storage from a target. Treat scan output as potentially sensitive.
+
+- Only scan systems you own or have explicit permission to assess.
+- Never commit API keys, session tokens, credentials, cookies, or private scan output.
+- Review generated reports before sharing them.
+- Read [SECURITY.md](SECURITY.md) for vulnerability reporting and safe-use guidance.
 
 ## Configuration
 
-All configuration is managed through environment variables. Create a `.env` file (see `.env.example`):
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `SHODAN_API_KEY` | `""` | Shodan API key for host security scanning |
-| `SCAN_TIMEOUT` | `30` | Maximum seconds to wait for a page scan |
-| `MAX_RETRIES` | `3` | Number of retries for failed network requests |
-| `RATE_LIMIT_DELAY` | `1.0` | Minimum seconds between rate-limited requests |
-| `OUTPUT_DIR` | `scan_results` | Directory for storing exported reports |
-| `HEADLESS` | `true` | Run browser in headless mode (no visible window) |
-| `LOG_LEVEL` | `INFO` | Logging verbosity: DEBUG, INFO, WARNING, ERROR, CRITICAL |
-
----
-
-## Usage
-
-### Launch the GUI
-
-```bash
-python3 -m api_scanner.main
-```
-
-### Scan Workflow
-
-1. Enter a target URL in the Scanner tab
-2. Click "Scan" to start the browser-based analysis
-3. View captured API endpoints and network requests in the Results tab
-4. Check Security tab for threat analysis results
-5. Export reports in JSON, CSV, or HTML format via the Reports tab
-
-### Export Formats
-
-- **JSON**: Complete structured data with metadata, ideal for programmatic access
-- **CSV**: Tabular data split into requests.csv, api_endpoints.csv, and responses.csv
-- **HTML**: Self-contained professional report with embedded CSS, suitable for sharing
-
----
+| Variable | Default | Purpose |
+|---|---:|---|
+| `SHODAN_API_KEY` | empty | Optional Shodan host intelligence |
+| `SCAN_TIMEOUT` | `30` | Page navigation timeout in seconds |
+| `MAX_RETRIES` | `3` | Retry count |
+| `RATE_LIMIT_DELAY` | `1.0` | Minimum delay between rate-limited requests |
+| `OUTPUT_DIR` | `scan_results` | Report output directory |
+| `HEADLESS` | `true` | Browser visibility |
+| `LOG_LEVEL` | `INFO` | Logging level |
 
 ## Development
 
-### Setup
-
 ```bash
-# Clone and install in development mode
-git clone https://github.com/your-username/Api_Scanner_Bot.git
-cd Api_Scanner_Bot
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-playwright install chromium
+pip install -e ".[dev]"
+pytest -q
+pytest -q tests/test_threat_analyzer.py
 ```
 
-### Running Tests
-
-```bash
-# Run full test suite
-python3 -m pytest tests/ -v
-
-# Run specific test module
-python3 -m pytest tests/test_threat_analyzer.py -v
-
-# Run with coverage (if pytest-cov installed)
-python3 -m pytest tests/ --cov=api_scanner -v
-```
-
-### Code Quality
-
-```bash
-# Check all files compile without errors
-python3 -m py_compile api_scanner/__init__.py
-python3 -m py_compile api_scanner/main.py
-
-# Verify imports work
-python3 -c "import api_scanner; print(api_scanner.__version__)"
-```
-
----
-
-## Testing (Hindi)
-
-```bash
-# पूरा test suite चलाएं
-python3 -m pytest tests/ -v
-
-# Specific module test करें
-python3 -m pytest tests/test_threat_analyzer.py -v
-```
-
----
-
-## License
-
-This project is licensed under the MIT License.
-
----
+The threat-analysis tests are deterministic and do not require a live target.
 
 ## Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/your-feature`)
-3. Write tests for your changes
-4. Ensure all tests pass (`python3 -m pytest tests/ -v`)
-5. Commit your changes with descriptive messages
-6. Push and open a Pull Request
+Contributions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening an issue or pull request.
+
+The repository includes structured bug/feature issue forms, a pull-request checklist, security guidance, and automated CI.
+
+## License
+
+API Scanner Pro is released under the [MIT License](LICENSE).
+
+## Maintainer
+
+Repository: https://github.com/Skbindas/Api_Scanner_Bot
