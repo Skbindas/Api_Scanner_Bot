@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+title: "API Scanner Pro"
+message: "If you use API Scanner Pro in research or tooling, please cite this repository."
+type: software
+authors:
+  - family-names: Choudhary
+    given-names: Suhaib
+repository-code: "https://github.com/Skbindas/Api_Scanner_Bot"
+license: MIT
+version: 2.0.0
+date-released: 2026-09-18
