@@ -7,7 +7,6 @@ without requiring the Tkinter GUI.
 import argparse
 import asyncio
 import json
-from pathlib import Path
 from typing import Sequence
 
 from api_scanner.config import AppConfig

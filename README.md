@@ -103,6 +103,14 @@ python -m api_scanner.cli --help
 
 GitHub Actions runs the tests and CLI/package smoke checks on Python 3.11, 3.12, and 3.13.
 
+For the current adoption/implementation evidence snapshot, see [docs/oss-evidence.md](docs/oss-evidence.md).
+
+## Release process
+
+Versioned releases are built from semantic Git tags. The repository contains an automated tagged-release workflow that builds the Python distribution and validates it with `twine check`.
+
+The v2.0.0 release should be created only after the `v2.0.0` tag is created on the validated `main` commit. See [docs/release.md](docs/release.md) for the maintainer checklist.
+
 ## GUI workflow
 
 1. Enter an authorized target URL.
